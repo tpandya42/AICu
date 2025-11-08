@@ -13,12 +13,12 @@ int	is_valid(const char *line, int *size)
 	{
 		if (line[i] < '0' || line[i] > '9')
 			return (0);
-		if (num > MAX_ITEMS || (num == MAX_ITEMS && (line[i] - '0') > 0))
+		if (num > MAX_ITEMS / 10 || (num == MAX_ITEMS / 10 && (line[i] - '0') > MAX_ITEMS % 10))
 			return (0);
 		num = num * 10 + (line[i] - '0');
 		i++;
 	}
-	if (num > MIN_ITEMS || num > MAX_ITEMS)
+	if (num < MIN_ITEMS || num > MAX_ITEMS)
 		return (0);
 	*size = (int)num;
 	return (1);

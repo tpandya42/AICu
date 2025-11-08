@@ -46,10 +46,42 @@ int main(int argc, char **argv) {
 
         int i = 0;
 	while (i < num_heaps) {
-            const char *msg = "Heap ";
-            write(STDOUT_FILENO, msg, 5);
-            const char *msg2 = ": [size]\n";
-            write(STDOUT_FILENO, msg2, 9);
+            write(STDOUT_FILENO, "Heap ", 5);
+            
+            char index_str[16];
+            int idx_len = 0;
+            int temp_idx = i + 1;
+            while (temp_idx > 0) {
+                index_str[idx_len++] = (temp_idx % 10) + '0';
+                temp_idx /= 10;
+            }
+            int j = idx_len - 1;
+            while (j >= 0) {
+                write(STDOUT_FILENO, &index_str[j], 1);
+                j--;
+            }
+            
+            write(STDOUT_FILENO, ": ", 2);
+            
+            // Print heap size
+            char size_str[16];
+            int size_len = 0;
+            int temp_size = board[i];
+            if (temp_size == 0) {
+                size_str[0] = '0';
+                size_len = 1;
+            } else {
+                while (temp_size > 0) {
+                    size_str[size_len++] = (temp_size % 10) + '0';
+                    temp_size /= 10;
+                }
+            }
+            j = size_len - 1;
+            while (j >= 0) {
+                write(STDOUT_FILENO, &size_str[j], 1);
+                j--;
+            }
+            write(STDOUT_FILENO, "\n", 1);
             i++;
         }
         
