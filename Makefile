@@ -8,7 +8,8 @@ SRC = \
 	   $(SRC_DIR)/main.c \
 	   $(SRC_DIR)/reading.c \
 	   $(SRC_DIR)/parsing.c \
-	   $(SRC_DIR)/utils.c 
+	   $(SRC_DIR)/utils.c \
+	   $(SRC_DIR)/game.c 
 
 OBJDIR = obj
 OBJ = $(addprefix $(OBJDIR)/, $(SRC:$(SRC_DIR)/%.c=%.o))

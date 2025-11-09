@@ -25,4 +25,14 @@ void	free_board(int *board);
 int					read_next_char(char *buf, int fd);
 char					*get_next_line(int fd);
 int	*read_board(int fd, int *num_heaps);
+
+// GAME
+void	display_board(int *board, int num_heaps);
+int		ai_move(int *board, int num_heaps);
+int		get_player_move(int *board, int num_heaps);
+void	play_game(int *board, int num_heaps);
+int		is_game_over(int *board, int num_heaps);
+int		find_last_heap(int *board, int num_heaps);
+void	print_number(int n);
+
 #endif
