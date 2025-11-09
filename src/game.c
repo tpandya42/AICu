@@ -148,18 +148,30 @@ int	read_number_from_input(void)
 	int		i;
 	int		num;
 	int		bytes;
+	int		input_fd;
+
+	input_fd = open("/dev/tty", O_RDONLY);
+	if (input_fd < 0)
+		input_fd = STDIN_FILENO;
 
 	i = 0;
 	while (i < 31)
 	{
-		bytes = read(STDIN_FILENO, &buffer[i], 1);
+		bytes = read(input_fd, &buffer[i], 1);
 		if (bytes <= 0)
+		{
+			if (input_fd != STDIN_FILENO)
+				close(input_fd);
 			return (-1);
+		}
 		if (buffer[i] == '\n')
 			break;
 		i++;
 	}
 	buffer[i] = '\0';
+	
+	if (input_fd != STDIN_FILENO)
+		close(input_fd);
 	
 	if (i == 0)
 		return (-1);
@@ -198,11 +210,20 @@ int	get_player_move(int *board, int num_heaps)
 		
 		choice = read_number_from_input();
 		
+		if (choice == -1)
+		{
+			write(STDOUT_FILENO, "\nEOF detected. Exiting game.\n", 29);
+			return (-1);
+		}
+		
 		if (choice >= 1 && choice <= max_take)
 			return (choice);
 		
-		print_number(choice);
-		write(STDOUT_FILENO, " - Invalid choice\n", 18);
+		if (choice >= 0)
+		{
+			print_number(choice);
+			write(STDOUT_FILENO, " - Invalid choice\n", 18);
+		}
 	}
 }
 
@@ -245,6 +266,8 @@ void	play_game(int *board, int num_heaps)
 		else
 		{
 			move = get_player_move(board, num_heaps);
+			if (move == -1)
+				return;
 			last_heap = find_last_heap(board, num_heaps);
 			board[last_heap] -= move;
 		}

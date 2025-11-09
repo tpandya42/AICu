@@ -1,25 +1,32 @@
 #include "aicu.h"
 
+typedef struct s_fd_buffer
+{
+	char	stash[BUFFER_SIZE + 1];
+	int		i;
+	int		bytes_read;
+}	t_fd_buffer;
 
-static char	stash[BUFFER_SIZE + 1];
-static int	i = 0;
-static int	bytes_read = 0;
+static t_fd_buffer	buffers[1024];
 
 int	read_next_char(char *buf, int fd)
 {
-	if (i == bytes_read)
-	{
-		bytes_read = read(fd, stash, BUFFER_SIZE);
+	if (fd < 0 || fd >= 1024)
+		return (-1);
 		
-		if (bytes_read < 0)
-			return (-1); // Read error
-		if (bytes_read == 0)
-			return (0); // EOF
+	if (buffers[fd].i == buffers[fd].bytes_read)
+	{
+		buffers[fd].bytes_read = read(fd, buffers[fd].stash, BUFFER_SIZE);
+		
+		if (buffers[fd].bytes_read < 0)
+			return (-1);
+		if (buffers[fd].bytes_read == 0)
+			return (0);
 			
-		stash[bytes_read] = '\0';
-		i = 0;
+		buffers[fd].stash[buffers[fd].bytes_read] = '\0';
+		buffers[fd].i = 0;
 	}
-	*buf = stash[i++];
+	*buf = buffers[fd].stash[buffers[fd].i++];
 	return (1);
 }
 
